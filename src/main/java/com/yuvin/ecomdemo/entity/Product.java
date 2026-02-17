@@ -18,24 +18,24 @@ public class Product {
   @Column(nullable = false)
   @NotBlank(message = "Name field is required")
   private String name;
-  
+
   @Column(nullable = false)
   @NotNull(message = "Price field is required")
   @PositiveOrZero(message = "Value must be zero or greater than zero ")
   private Double price;
-    
+
   @Column(nullable = false)
   @NotBlank(message = "Description field is required")
-  private String desc;
-  
+  private String description;
+
   private Double ratings = 0.0;
-  
+
   @NotBlank(message = "Seller field is required")
   private String seller;
 
   @NotNull(message = "Stock field is required")
   private Integer stock;
-  
+
   private Integer numOfReviews = 0;
 
   public Long getId() {
@@ -62,12 +62,12 @@ public class Product {
     this.price = price;
   }
 
-  public String getDesc() {
-    return desc;
+  public String getDescription() {
+    return description;
   }
 
-  public void setDesc(String desc) {
-    this.desc = desc;
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public Double getRatings() {
@@ -102,13 +102,13 @@ public class Product {
     this.numOfReviews = numOfReviews;
   }
 
-  public Product(Long id, String name, Double price, String desc, Double ratings, String seller, Integer stock,
+  public Product(Long id, String name, Double price, String description, Double ratings, String seller, Integer stock,
       Integer numOfReviews) {
     super();
     this.id = id;
     this.name = name;
     this.price = price;
-    this.desc = desc;
+    this.description = description;
     this.ratings = ratings;
     this.seller = seller;
     this.stock = stock;
