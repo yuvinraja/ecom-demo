@@ -44,6 +44,9 @@ public class ProductReview {
     this.comment = comment;
   }
 
+  public ProductReview() {
+  }
+
   public ProductReview(Long id, Integer rating, String comment) {
     super();
     this.id = id;

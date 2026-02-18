@@ -39,6 +39,9 @@ public class ProductImage {
     this.url = url;
   }
 
+  public ProductImage() {
+  }
+
   public ProductImage(Long id, String publicId, String url) {
     super();
     this.id = id;

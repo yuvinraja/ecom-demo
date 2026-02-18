@@ -117,6 +117,9 @@ public class Product {
     this.numOfReviews = numOfReviews;
   }
 
+  public Product() {
+  }
+
   public Product(Long id, String name, Double price, String description, Double ratings, String seller, Integer stock,
       Integer numOfReviews) {
     super();
