@@ -35,4 +35,8 @@ public class ProductSpecification {
       return cb.between(root.get("price"), min, max);
     };
   }
+
+  public static Specification<Product> ratingGreaterthan(Double ratings) {
+    return (root, query, cb) -> ratings == null ? null : cb.greaterThanOrEqualTo(root.get("ratings"), ratings);
+  }
 }

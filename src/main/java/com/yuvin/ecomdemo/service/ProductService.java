@@ -34,10 +34,11 @@ public class ProductService {
     return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Produt not found with the id " + id));
   }
 
-  public List<Product> searchProducts(String category, Double minPrice, Double maxPrice, String keyword) {
+  public List<Product> searchProducts(String category, Double minPrice, Double maxPrice, String keyword, Double ratings) {
     Specification<Product> spec = Specification.where(ProductSpecification.hasCategory(category))
         .and(ProductSpecification.priceBetween(minPrice, maxPrice))
-        .and(ProductSpecification.hasKeywordInName(keyword));
+        .and(ProductSpecification.hasKeywordInName(keyword))
+        .and(ProductSpecification.ratingGreaterthan(ratings));
     return productRepository.findAll(spec);
   }
 }
