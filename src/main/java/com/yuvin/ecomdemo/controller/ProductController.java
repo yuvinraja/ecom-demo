@@ -1,16 +1,17 @@
 package com.yuvin.ecomdemo.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yuvin.ecomdemo.entity.Product;
 import com.yuvin.ecomdemo.service.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/products")
@@ -26,8 +27,18 @@ public class ProductController {
     return productService.getAllProducts(page, size);
   }
 
+  @GetMapping("/search")
+  public List<Product> searchProducts(
+      @RequestParam(required = false) String category,
+      @RequestParam(required = false) Double minPrice,
+      @RequestParam(required = false) Double maxPrice,
+      @RequestParam(required = false) String keyword) {
+    return productService.searchProducts(category, minPrice, maxPrice, keyword);
+  }
+
   @GetMapping("/{id}")
   public Product getProductById(@PathVariable Long id) {
     return productService.getProductById(id);
   }
+
 }
