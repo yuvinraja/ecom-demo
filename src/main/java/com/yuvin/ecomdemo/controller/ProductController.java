@@ -18,7 +18,7 @@ public class ProductController {
   @Autowired
   private ProductService productService;
 
-  @GetMapping("/api/products")
+  @GetMapping()
   public ResponseEntity<List<Product>> getAllProducts() {
     List<Product> products = productService.getAllProducts();
     return ResponseEntity.ok(products);
