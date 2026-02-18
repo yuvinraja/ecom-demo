@@ -120,8 +120,7 @@ public class Product {
   public Product() {
   }
 
-  public Product(Long id, String name, Double price, String description, Double ratings, String seller, Integer stock,
-      Integer numOfReviews) {
+  public Product(Long id, String name, Double price, String description, Double ratings, String seller, Integer stock) {
     super();
     this.id = id;
     this.name = name;
@@ -130,7 +129,6 @@ public class Product {
     this.ratings = ratings;
     this.seller = seller;
     this.stock = stock;
-    this.numOfReviews = numOfReviews;
   }
 
 }
