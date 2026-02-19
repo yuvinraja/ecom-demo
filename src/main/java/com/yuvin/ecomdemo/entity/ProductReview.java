@@ -47,6 +47,7 @@ public class ProductReview {
   }
 
   public ProductReview() {
+    super();
   }
 
   public ProductReview(Long id, @Min(1) @Max(5) Double rating, String comment) {
