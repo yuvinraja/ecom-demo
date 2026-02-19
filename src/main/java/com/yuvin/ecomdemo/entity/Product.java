@@ -1,6 +1,7 @@
 package com.yuvin.ecomdemo.entity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -130,7 +131,8 @@ public class Product {
   public Product() {
   }
 
-  public Product(Long id, String name, Double price, String description, String category, Double ratings, String seller, Integer stock) {
+  public Product(Long id, String name, Double price, String description, String category, Double ratings, String seller,
+      Integer stock, List<String> images) {
     super();
     this.id = id;
     this.name = name;
@@ -140,6 +142,7 @@ public class Product {
     this.ratings = ratings;
     this.seller = seller;
     this.stock = stock;
+    this.images = images.stream().map(url -> new ProductImage(url, this)).collect(Collectors.toList());
   }
 
 }
