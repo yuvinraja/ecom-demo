@@ -65,7 +65,7 @@ public class ProductService {
     dto.setReviews(reviewDtos);
 
     List<ProductImageDto> imageDtos = product.getImages().stream().map(image -> {
-      ProductImageDto imageDto = new ProductImageDto(image.getUrl());
+      ProductImageDto imageDto = new ProductImageDto(image.getPublicId());
       return imageDto;
     }).collect(Collectors.toList());
 
