@@ -52,6 +52,14 @@ public class Product {
   @JoinColumn(name = "product_id")
   private List<ProductImage> images;
 
+  public List<ProductImage> getImages() {
+    return images;
+  }
+
+  public void setImages(List<ProductImage> images) {
+    this.images = images;
+  }
+
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "product_id")
   private List<ProductReview> reviews;

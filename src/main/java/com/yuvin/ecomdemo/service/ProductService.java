@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.yuvin.ecomdemo.dto.ProductDto;
+import com.yuvin.ecomdemo.dto.ProductImageDto;
 import com.yuvin.ecomdemo.dto.ProductReviewDto;
 import com.yuvin.ecomdemo.entity.Product;
 import com.yuvin.ecomdemo.entity.ProductReview;
@@ -62,6 +63,13 @@ public class ProductService {
     }).collect(Collectors.toList());
 
     dto.setReviews(reviewDtos);
+
+    List<ProductImageDto> imageDtos = product.getImages().stream().map(image -> {
+      ProductImageDto imageDto = new ProductImageDto(image.getUrl());
+      return imageDto;
+    }).collect(Collectors.toList());
+
+    dto.setImages(imageDtos);
 
     return dto;
   }

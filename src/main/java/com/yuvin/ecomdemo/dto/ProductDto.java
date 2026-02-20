@@ -28,6 +28,16 @@ public class ProductDto {
 
   private List<ProductReviewDto> reviews;
 
+  private List<ProductImageDto> images;
+
+  public List<ProductImageDto> getImages() {
+    return images;
+  }
+
+  public void setImages(List<ProductImageDto> imageDtos) {
+    this.images = imageDtos;
+  }
+
   public List<ProductReviewDto> getReviews() {
     return reviews;
   }
