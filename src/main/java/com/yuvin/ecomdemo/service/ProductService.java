@@ -44,20 +44,31 @@ public class ProductService {
     ProductDto dto = new ProductDto();
     dto.setId(product.getId());
     dto.setName(product.getName());
-    dto.setDescription(product.getName());
+    dto.setDescription(product.getDescription());
+    dto.setPrice(product.getPrice());
     dto.setRatings(product.getRatings());
     dto.setCategory(product.getCategory());
     dto.setSeller(product.getSeller());
-    dto.setSeller(product.getSeller());
     dto.setStock(product.getStock());
     dto.setNumOfReviews(product.getNumOfReviews());
-    dto.setReviews(product.getReviews());
+
+    List<ProductReviewDto> reviewDtos = product.getReviews().stream().map(review -> {
+      ProductReviewDto reviewDto = new ProductReviewDto();
+      reviewDto.setProductId(review.getId());
+      reviewDto.setComment(review.getComment());
+      reviewDto.setRating(review.getRating());
+
+      return reviewDto;
+    }).collect(Collectors.toList());
+
+    dto.setReviews(reviewDtos);
 
     return dto;
   }
 
   public Product getProductById(Long id) {
-    return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Produt not found with the id " + id));
+    return productRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Product not found with the id " + id));
   }
 
   public List<Product> searchProducts(String category, Double minPrice, Double maxPrice, String keyword,
