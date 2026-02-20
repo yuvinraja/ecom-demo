@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuvin.ecomdemo.dto.CreateOrderRequest;
+import com.yuvin.ecomdemo.dto.OrderCreated;
 import com.yuvin.ecomdemo.dto.OrderItemDto;
 import com.yuvin.ecomdemo.entity.Order;
 import com.yuvin.ecomdemo.entity.OrderItem;
@@ -22,7 +23,7 @@ public class OrderService {
   @Autowired
   private OrderRepository orderRepository;
 
-  public Order createOrder(CreateOrderRequest orderRequest) {
+  public OrderCreated createOrder(CreateOrderRequest orderRequest) {
     Order order = new Order();
     order.setStatus("pending");
     double totalItemsAmount = 0;
@@ -51,10 +52,19 @@ public class OrderService {
     double totalAmount = totalItemsAmount + taxAmount;
     order.setTotalAmount(totalAmount);
 
-    order.setOrderNo(UUID.randomUUID().toString());
+    String orderNo = UUID.randomUUID().toString();
+    order.setOrderNo(orderNo);
 
-    return orderRepository.save(order);
+    orderRepository.save(order);
 
+    OrderCreated orderCreated = new OrderCreated();
+    orderCreated.setReferenceId(orderNo);
+    return orderCreated;
+  }
+
+  public Order getOrder(String orderNo) {
+    return orderRepository.findByOrderNo(orderNo)
+        .orElseThrow(() -> new RuntimeException("No order found with order no" + orderNo));
   }
 
 }
