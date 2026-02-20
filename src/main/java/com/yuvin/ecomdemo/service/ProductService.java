@@ -3,6 +3,7 @@ package com.yuvin.ecomdemo.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.yuvin.ecomdemo.dto.ProductDto;
 import com.yuvin.ecomdemo.dto.ProductReviewDto;
 import com.yuvin.ecomdemo.entity.Product;
 import com.yuvin.ecomdemo.entity.ProductReview;
@@ -30,10 +32,28 @@ public class ProductService {
   public Map<String, Object> getAllProducts(int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<Product> products = productRepository.findAll(pageable);
+    List<ProductDto> productDtos = products.stream().map(this::convertToDto).collect(Collectors.toList());
     Map<String, Object> response = new HashMap<>();
-    response.put("products", products.getContent());
+    response.put("products", productDtos);
     response.put("totalProducts", products.getTotalElements());
+
     return response;
+  }
+
+  public ProductDto convertToDto(Product product) {
+    ProductDto dto = new ProductDto();
+    dto.setId(product.getId());
+    dto.setName(product.getName());
+    dto.setDescription(product.getName());
+    dto.setRatings(product.getRatings());
+    dto.setCategory(product.getCategory());
+    dto.setSeller(product.getSeller());
+    dto.setSeller(product.getSeller());
+    dto.setStock(product.getStock());
+    dto.setNumOfReviews(product.getNumOfReviews());
+    dto.setReviews(product.getReviews());
+
+    return dto;
   }
 
   public Product getProductById(Long id) {
@@ -50,7 +70,8 @@ public class ProductService {
   }
 
   public void addReview(ProductReviewDto reviewDto) {
-    Product product = productRepository.findById(reviewDto.getProductId()).orElseThrow(() -> (new RuntimeException("Product not found")));
+    Product product = productRepository.findById(reviewDto.getProductId())
+        .orElseThrow(() -> (new RuntimeException("Product not found")));
 
     ProductReview review = new ProductReview();
     review.setComment(reviewDto.getComment());
