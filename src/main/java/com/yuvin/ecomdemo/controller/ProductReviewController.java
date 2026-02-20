@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yuvin.ecomdemo.dto.ProductReviewDto;
 import com.yuvin.ecomdemo.service.ProductService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 
 
@@ -21,7 +24,7 @@ public class ProductReviewController {
 
   @PostMapping
   public ResponseEntity<?> addReview(
-      @RequestBody ProductReviewDto reviewDto) {
+      @RequestBody @Valid ProductReviewDto reviewDto) {
         productService.addReview(reviewDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Review added");
