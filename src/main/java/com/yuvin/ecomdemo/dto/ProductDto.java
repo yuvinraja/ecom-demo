@@ -2,8 +2,6 @@ package com.yuvin.ecomdemo.dto;
 
 import java.util.List;
 
-import com.yuvin.ecomdemo.entity.ProductReview;
-
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 
