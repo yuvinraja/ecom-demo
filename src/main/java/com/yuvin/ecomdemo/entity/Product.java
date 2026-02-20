@@ -56,6 +56,14 @@ public class Product {
   @JoinColumn(name = "product_id")
   private List<ProductReview> reviews;
 
+  public List<ProductReview> getReviews() {
+    return reviews;
+  }
+
+  public void setReviews(List<ProductReview> reviews) {
+    this.reviews = reviews;
+  }
+
   public Long getId() {
     return id;
   }
