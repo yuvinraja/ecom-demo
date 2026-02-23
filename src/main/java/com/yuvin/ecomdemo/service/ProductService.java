@@ -76,7 +76,7 @@ public class ProductService {
 
   public Product getProductById(Long id) {
     return productRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Product not found with the id " + id));
+        .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
   }
 
   public List<Product> searchProducts(String category, Double minPrice, Double maxPrice, String keyword,
@@ -90,7 +90,7 @@ public class ProductService {
 
   public void addReview(ProductReviewDto reviewDto) {
     Product product = productRepository.findById(reviewDto.getProductId())
-        .orElseThrow(() -> (new RuntimeException("Product not found")));
+        .orElseThrow(() -> new RuntimeException("Product not found with id: " + reviewDto.getProductId()));
 
     ProductReview review = new ProductReview();
     review.setComment(reviewDto.getComment());
