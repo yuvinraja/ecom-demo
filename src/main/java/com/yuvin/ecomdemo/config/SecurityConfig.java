@@ -39,8 +39,6 @@ public class SecurityConfig {
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
             .requestMatchers("/products/**").permitAll() // Static files
-            // Admin only endpoints
-            .requestMatchers("/api/admin/**").hasRole("ADMIN")
             // Authenticated endpoints
             .requestMatchers("/api/orders/**").authenticated()
             .requestMatchers(HttpMethod.POST, "/api/products/reviews").authenticated()

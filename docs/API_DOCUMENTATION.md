@@ -15,7 +15,6 @@ A comprehensive Spring Boot REST API for an e-commerce platform with authenticat
    - [Product Endpoints](#product-endpoints)
    - [Order Endpoints](#order-endpoints)
    - [Product Review Endpoints](#product-review-endpoints)
-   - [Admin Endpoints](#admin-endpoints)
 6. [Data Models](#data-models)
 7. [Error Handling](#error-handling)
 8. [Postman Collection Setup](#postman-collection-setup)
@@ -30,7 +29,6 @@ This is a RESTful e-commerce API that provides:
 - **Product Management**: Browse, search, and filter products
 - **Order Management**: Create and track orders
 - **Product Reviews**: Add reviews to products
-- **Admin Panel**: Full CRUD operations for products, orders, and users
 
 ## Technology Stack
 
@@ -94,7 +92,6 @@ Authorization: Bearer <your_jwt_token>
 | Role    | Description                                    |
 |---------|------------------------------------------------|
 | `USER`  | Regular user - can browse, order, review       |
-| `ADMIN` | Administrator - full access to admin endpoints |
 
 ### Access Control Summary
 
@@ -104,7 +101,6 @@ Authorization: Bearer <your_jwt_token>
 | `GET /api/products/**`      | Public              |
 | `POST /api/products/reviews`| Authenticated Users |
 | `/api/orders/**`            | Authenticated Users |
-| `/api/admin/**`             | Admin Only          |
 
 ---
 
@@ -620,420 +616,6 @@ Content-Type: application/json
 
 ---
 
-## Admin Endpoints
-
-> **Note:** All admin endpoints require `ADMIN` role. Use the Authorization header with a token from an admin user.
-
-### Product Management
-
-#### 1. Create Product
-
-Create a new product.
-
-**Endpoint:** `POST /api/admin/products`
-
-**Access:** Admin Only
-
-**Headers:**
-
-```
-Authorization: Bearer <admin_token>
-Content-Type: application/json
-```
-
-**Request Body:**
-
-```json
-{
-  "name": "New Product",
-  "price": 149.99,
-  "description": "A brand new product description",
-  "category": "Electronics",
-  "seller": "TechStore",
-  "stock": 100,
-  "imageIds": ["products/image_001", "products/image_002"]
-}
-```
-
-**Validation Rules:**
-
-| Field       | Type         | Rules                          |
-|-------------|--------------|--------------------------------|
-| name        | String       | Required                       |
-| price       | Double       | Required, must be >= 0         |
-| description | String       | Required                       |
-| category    | String       | Optional                       |
-| seller      | String       | Required                       |
-| stock       | Integer      | Required, must be >= 0         |
-| imageIds    | List<String> | Optional                       |
-
-**Success Response (201 Created):**
-
-```json
-{
-  "id": 10,
-  "name": "New Product",
-  "price": 149.99,
-  "description": "A brand new product description",
-  "category": "Electronics",
-  "ratings": 0.0,
-  "seller": "TechStore",
-  "stock": 100,
-  "numOfReviews": 0,
-  "reviews": [],
-  "images": [
-    {"publicId": "products/image_001"},
-    {"publicId": "products/image_002"}
-  ]
-}
-```
-
----
-
-#### 2. Update Product
-
-Update an existing product (partial updates supported).
-
-**Endpoint:** `PUT /api/admin/products/{id}`
-
-**Access:** Admin Only
-
-**Headers:**
-
-```
-Authorization: Bearer <admin_token>
-Content-Type: application/json
-```
-
-**Path Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id        | Long | Product ID  |
-
-**Request Body (all fields optional):**
-
-```json
-{
-  "name": "Updated Product Name",
-  "price": 129.99,
-  "description": "Updated description",
-  "category": "Updated Category",
-  "seller": "Updated Seller",
-  "stock": 75
-}
-```
-
-**Example - Update only price and stock:**
-
-```json
-{
-  "price": 89.99,
-  "stock": 150
-}
-```
-
-**Success Response (200 OK):**
-
-```json
-{
-  "id": 10,
-  "name": "Updated Product Name",
-  "price": 129.99,
-  "description": "Updated description",
-  "category": "Updated Category",
-  "ratings": 4.5,
-  "seller": "Updated Seller",
-  "stock": 75,
-  "numOfReviews": 10,
-  "reviews": [...],
-  "images": [...]
-}
-```
-
----
-
-#### 3. Delete Product
-
-Delete a product by ID.
-
-**Endpoint:** `DELETE /api/admin/products/{id}`
-
-**Access:** Admin Only
-
-**Headers:**
-
-```
-Authorization: Bearer <admin_token>
-```
-
-**Path Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id        | Long | Product ID  |
-
-**Success Response (200 OK):**
-
-```json
-{
-  "message": "Product deleted successfully"
-}
-```
-
----
-
-### Order Management
-
-#### 4. Get All Orders (Admin)
-
-Retrieve all orders with optional status filtering.
-
-**Endpoint:** `GET /api/admin/orders`
-
-**Access:** Admin Only
-
-**Headers:**
-
-```
-Authorization: Bearer <admin_token>
-```
-
-**Query Parameters:**
-
-| Parameter | Type    | Default | Description                |
-|-----------|---------|---------|----------------------------|
-| page      | integer | 0       | Page number (0-indexed)    |
-| size      | integer | 10      | Number of items per page   |
-| status    | String  | null    | Filter by order status     |
-
-**Example Requests:**
-
-```
-GET /api/admin/orders?page=0&size=20
-GET /api/admin/orders?status=pending
-GET /api/admin/orders?status=delivered&page=0&size=5
-```
-
-**Success Response (200 OK):**
-
-```json
-{
-  "orders": [
-    {
-      "id": 1,
-      "orderItems": [...],
-      "totalItemsAmount": 199.98,
-      "taxAmount": 19.998,
-      "totalAmount": 219.978,
-      "status": "pending",
-      "orderNo": "550e8400-e29b-41d4-a716-446655440000",
-      "createdAt": "2026-02-24T10:30:00",
-      "updatedAt": "2026-02-24T10:30:00"
-    }
-  ],
-  "totalOrders": 150,
-  "totalPages": 15,
-  "currentPage": 0
-}
-```
-
----
-
-#### 5. Update Order Status
-
-Change the status of an order.
-
-**Endpoint:** `PUT /api/admin/orders/{orderNo}/status`
-
-**Access:** Admin Only
-
-**Headers:**
-
-```
-Authorization: Bearer <admin_token>
-```
-
-**Path Parameters:**
-
-| Parameter | Type   | Description           |
-|-----------|--------|-----------------------|
-| orderNo   | String | Order reference number|
-
-**Query Parameters:**
-
-| Parameter | Type   | Description          |
-|-----------|--------|----------------------|
-| status    | String | New status value     |
-
-**Valid Status Values:**
-
-| Status      | Description                    |
-|-------------|--------------------------------|
-| pending     | Order placed, awaiting action  |
-| processing  | Order is being processed       |
-| shipped     | Order has been shipped         |
-| delivered   | Order has been delivered       |
-| cancelled   | Order has been cancelled       |
-
-**Example Request:**
-
-```
-PUT /api/admin/orders/550e8400-e29b-41d4-a716-446655440000/status?status=shipped
-```
-
-**Success Response (200 OK):**
-
-```json
-{
-  "id": 1,
-  "orderItems": [...],
-  "totalItemsAmount": 199.98,
-  "taxAmount": 19.998,
-  "totalAmount": 219.978,
-  "status": "shipped",
-  "orderNo": "550e8400-e29b-41d4-a716-446655440000",
-  "createdAt": "2026-02-24T10:30:00",
-  "updatedAt": "2026-02-24T12:45:00"
-}
-```
-
-**Error Response (400 Bad Request):**
-
-```json
-{
-  "status": 400,
-  "message": "Invalid status. Valid statuses are: [pending, processing, shipped, delivered, cancelled]",
-  "timestamp": "2026-02-24T10:30:00"
-}
-```
-
----
-
-### User Management
-
-#### 6. Get All Users
-
-Retrieve all registered users (paginated).
-
-**Endpoint:** `GET /api/admin/users`
-
-**Access:** Admin Only
-
-**Headers:**
-
-```
-Authorization: Bearer <admin_token>
-```
-
-**Query Parameters:**
-
-| Parameter | Type    | Default | Description              |
-|-----------|---------|---------|--------------------------|
-| page      | integer | 0       | Page number (0-indexed)  |
-| size      | integer | 10      | Number of items per page |
-
-**Success Response (200 OK):**
-
-```json
-{
-  "users": [
-    {
-      "id": 1,
-      "name": "John Doe",
-      "email": "john@example.com",
-      "role": "USER"
-    },
-    {
-      "id": 2,
-      "name": "Admin User",
-      "email": "admin@example.com",
-      "role": "ADMIN"
-    }
-  ],
-  "totalUsers": 50,
-  "totalPages": 5,
-  "currentPage": 0
-}
-```
-
----
-
-#### 7. Delete User
-
-Delete a user by ID.
-
-**Endpoint:** `DELETE /api/admin/users/{id}`
-
-**Access:** Admin Only
-
-**Headers:**
-
-```
-Authorization: Bearer <admin_token>
-```
-
-**Path Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id        | Long | User ID     |
-
-**Success Response (200 OK):**
-
-```json
-{
-  "message": "User deleted successfully"
-}
-```
-
----
-
-### Dashboard
-
-#### 8. Get Dashboard Statistics
-
-Retrieve comprehensive dashboard statistics.
-
-**Endpoint:** `GET /api/admin/dashboard/stats`
-
-**Access:** Admin Only
-
-**Headers:**
-
-```
-Authorization: Bearer <admin_token>
-```
-
-**Success Response (200 OK):**
-
-```json
-{
-  "totalProducts": 150,
-  "totalOrders": 500,
-  "totalUsers": 200,
-  "ordersByStatus": {
-    "pending": 25,
-    "processing": 15,
-    "shipped": 30,
-    "delivered": 420,
-    "cancelled": 10
-  },
-  "totalRevenue": 125000.50,
-  "recentOrders": [
-    {
-      "id": 500,
-      "orderNo": "...",
-      "status": "pending",
-      "totalAmount": 299.99,
-      "createdAt": "2026-02-24T10:30:00"
-    }
-  ]
-}
-```
-
----
-
 ## Data Models
 
 ### User Entity
@@ -1150,7 +732,6 @@ The API uses standardized error responses:
 |------------|----------------------------|-------------------------|
 | base_url   | http://localhost:8080      | API base URL            |
 | token      |                            | JWT token (auto-filled) |
-| admin_token|                            | Admin JWT token         |
 
 ### Auto-Save Token Script
 
@@ -1179,21 +760,8 @@ if (pm.response.code === 200 || pm.response.code === 201) {
 │   ├── Create Order
 │   ├── Get Order by Number
 │   └── Get My Orders
-├── 📁 Reviews (User)
-│   └── Add Product Review
-└── 📁 Admin
-    ├── 📁 Products
-    │   ├── Create Product
-    │   ├── Update Product
-    │   └── Delete Product
-    ├── 📁 Orders
-    │   ├── Get All Orders
-    │   └── Update Order Status
-    ├── 📁 Users
-    │   ├── Get All Users
-    │   └── Delete User
-    └── 📁 Dashboard
-        └── Get Dashboard Stats
+└── 📁 Reviews (User)
+    └── Add Product Review
 ```
 
 ### Testing Workflow
@@ -1203,21 +771,6 @@ if (pm.response.code === 200 || pm.response.code === 201) {
 3. **Login** - `POST /api/auth/login` (token auto-saved)
 4. **Browse products** - `GET /api/products` (no auth needed)
 5. **Create an order** - `POST /api/orders` (with token)
-6. **Admin operations** - Login with admin account, use admin endpoints
-
-### Creating an Admin User
-
-To create an admin user, you'll need to either:
-
-1. **Database insertion**: Manually insert a user with role `ADMIN`
-2. **Seed data**: Create a seed class to initialize admin users on startup
-
-Example SQL:
-
-```sql
-INSERT INTO users (name, email, password, role, created_at, updated_at) 
-VALUES ('Admin', 'admin@example.com', '<bcrypt_hashed_password>', 'ADMIN', NOW(), NOW());
-```
 
 ---
 
@@ -1235,15 +788,8 @@ VALUES ('Admin', 'admin@example.com', '<bcrypt_hashed_password>', 'ADMIN', NOW()
 | POST   | /api/orders                           | Authenticated   | Create order             |
 | GET    | /api/orders/{orderNo}                 | Authenticated   | Get order by number      |
 | GET    | /api/orders                           | Authenticated   | Get user's orders        |
-| POST   | /api/admin/products                   | Admin           | Create product           |
-| PUT    | /api/admin/products/{id}              | Admin           | Update product           |
-| DELETE | /api/admin/products/{id}              | Admin           | Delete product           |
-| GET    | /api/admin/orders                     | Admin           | Get all orders           |
-| PUT    | /api/admin/orders/{orderNo}/status    | Admin           | Update order status      |
-| GET    | /api/admin/users                      | Admin           | Get all users            |
-| DELETE | /api/admin/users/{id}                 | Admin           | Delete user              |
-| GET    | /api/admin/dashboard/stats            | Admin           | Get dashboard stats      |
 
 ---
 
 **Happy Testing!** 🚀
+````
